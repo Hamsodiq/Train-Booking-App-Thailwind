@@ -1,0 +1,25 @@
+{
+  "name": "train-booking-app-thailwind",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build-css": "npx tailwindcss -i ./src/styles.css -o ./public/styles.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hamsodiq/Train-Booking-App-Thailwind.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Hamsodiq/Train-Booking-App-Thailwind/issues"
+  },
+  "homepage": "https://github.com/Hamsodiq/Train-Booking-App-Thailwind#readme",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.17",
+    "tailwindcss": "^4.1.17"
+  }
+}
