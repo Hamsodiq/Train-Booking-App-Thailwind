@@ -1,7 +1,29 @@
 window.onload = function () {
 
+  // == TOAST FUNCTION ==//
+  function showIgToast(message) {
+    const toast = document.getElementById("igToast");
+    const messageEl = document.getElementById("igToastMessage");
+
+    messageEl.textContent = message;
+
+    toast.classList.remove(
+      "-translate-y-[150%]",
+      "opacity-0",
+      "pointer-events-none"
+    );
+
+    setTimeout(() => {
+      toast.classList.add(
+        "-translate-y-[150%]",
+        "opacity-0",
+        "pointer-events-none"
+      );
+    }, 4000);
+  }
+
   // ================================
-  // PASSWORD TOGGLE FUNCTION
+  // PASSWORD TOGGLE
   // ================================
   function setupToggle(inputId, iconId) {
     const input = document.getElementById(inputId);
@@ -11,16 +33,12 @@ window.onload = function () {
       const isHidden = input.type === "password";
       input.type = isHidden ? "text" : "password";
 
-      // Switch between eye and eye-slash
       icon.classList.toggle("fa-eye");
       icon.classList.toggle("fa-eye-slash");
-
-      // Optional: make icon green when active
       icon.classList.toggle("text-green-600");
     });
   }
 
-  // Apply to both password fields
   setupToggle("password", "togglePwd");
   setupToggle("confirmPassword", "toggleConfirmPwd");
 
@@ -30,70 +48,80 @@ window.onload = function () {
   const checkbox = document.querySelector("input[type='checkbox']");
   const signBtn = document.querySelector("button");
 
-  // Set initial state
-  if (!checkbox.checked) {
-    signBtn.disabled = true;
-    signBtn.classList.add("opacity-50", "cursor-not-allowed");
-  }
+  signBtn.disabled = !checkbox.checked;
+  signBtn.classList.toggle("opacity-50", !checkbox.checked);
+  signBtn.classList.toggle("cursor-not-allowed", !checkbox.checked);
 
   checkbox.addEventListener("change", () => {
-    if (checkbox.checked) {
-      // ENABLE BUTTON
-      signBtn.disabled = false;
-      signBtn.classList.remove("opacity-50", "cursor-not-allowed");
-
-      // Checkbox tailwind green style
-      checkbox.classList.add("text-green-600", "accent-green-600");
-
-    } else {
-      // DISABLE BUTTON
-      signBtn.disabled = true;
-      signBtn.classList.add("opacity-50", "cursor-not-allowed");
-
-      // Remove green color
-      checkbox.classList.remove("accent-green-600");
-    }
+    signBtn.disabled = !checkbox.checked;
+    signBtn.classList.toggle("opacity-50", !checkbox.checked);
+    signBtn.classList.toggle("cursor-not-allowed", !checkbox.checked);
   });
 
-  document.getElementById("signupForm").addEventListener("submit", validate);
-};
+  // ================================
+  // FORM SUBMIT
+  // ================================
+  document
+    .getElementById("signupForm")
+    .addEventListener("submit", validate);
 
-
-function validate(e) {
+  // ================================
+  // VALIDATION FUNCTION
+  // ================================
+  function validate(e) {
     e.preventDefault();
 
-    const firstName = document.getElementById("fname").value;
-    let lastName = document.getElementById("lname").value.trim();
-    let email = document.getElementById("email").value.trim();
-    let password = document.getElementById("password").value;
-    let confirmPassword = document.getElementById("confirmPassword").value;
-    let outputMessage = document.getElementById("outputMessage");
-    
+    const firstName = document.getElementById("fname").value.trim();
+    const lastName = document.getElementById("lname").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    const outputMessage = document.getElementById("outputMessage");
 
-    const userEmailCheck = getRegisteredUser().find((user) => user.email === email);
-    // const citizenMobileCheck = getCitizenUser().find((citizen) => citizen.mobile === mobile);
-    if(userEmailCheck){
-        outputMessage.style.color = "red";
-        outputMessage.textContent = "Email already Registered";
-        return;
-    }  
-    
-    if (password !== confirmPassword) {
-        outputMessage.style.color = "red";
-        outputMessage.textContent = "⚠ Passwords do not match.";
-        return;
-    }  if (password.length < 8) {
-        outputMessage.style.color = "red";
-        outputMessage.textContent = "⚠ Password must be at least 8 characters.";
-        return;
-    } else{
-        outputMessage.style.color = "green";
-        outputMessage.textContent = "Registration Sucessful";
+    outputMessage.textContent = "";
+
+    const userEmailCheck = getRegisteredUser().find(
+      (user) => user.email === email
+    );
+
+    if (userEmailCheck) {
+      outputMessage.style.color = "red";
+      outputMessage.textContent = "Email already registered";
+      return;
     }
-    
-    let registeredUser = new User(firstName, lastName, email, password, confirmPassword);
-    console.log(registeredUser);
+
+    if (password !== confirmPassword) {
+      outputMessage.style.color = "red";
+      outputMessage.textContent = "⚠ Passwords do not match.";
+      return;
+    }
+
+    if (password.length < 8) {
+      outputMessage.style.color = "red";
+      outputMessage.textContent = "⚠ Password must be at least 8 characters.";
+      return;
+    }
+
+    // ✅ SUCCESS
+    const registeredUser = new User(
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword
+    );
+
     saveRegisteredUser(registeredUser);
+
+    outputMessage.style.color = "green";
+    outputMessage.textContent = "Registration successful";
+
+    showIgToast("Account created successfully!");
+
     document.getElementById("signupForm").reset();
-    window.location.href = "../html/login.html";
-}
+
+    setTimeout(() => {
+      window.location.href = "../html/login.html";
+    }, 2000);
+  }
+};

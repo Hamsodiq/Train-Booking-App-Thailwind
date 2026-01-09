@@ -1,43 +1,86 @@
 window.onload = function () {
 
-    const passwordField = document.getElementById("password");
-    const togglePwd = document.getElementById("togglePwd");
+  // =================
+  // TOAST FUNCTION
+  // =================
+  function showIgToast(message) {
+    const toast = document.getElementById("igToast");
+    const messageEl = document.getElementById("igToastMessage");
 
-    togglePwd.addEventListener("click", () => {
-        const isPassword = passwordField.type === "password";
-        passwordField.type = isPassword ? "text" : "password";
+    messageEl.textContent = message;
 
-        // Toggle icon
-        togglePwd.classList.toggle("fa-eye");
-        togglePwd.classList.toggle("fa-eye-slash");
-    });
-
-    document.getElementById("loginForm").addEventListener("submit", validate);
-};
-
-function validate(e) {
-    e.preventDefault();
-
-    let email = document.getElementById('email').value;
-    let password = document.getElementById('password').value;
-    const outputMessage = document.getElementById('outputMessage');
-
-    const userLogin = getRegisteredUser().find(
-        (user) => user.email === email
+    toast.classList.remove(
+      "-translate-y-[150%]",
+      "opacity-0",
+      "pointer-events-none"
     );
 
-    if (!userLogin) {
-        outputMessage.innerHTML = 'Email addresses do not match.';
-        outputMessage.style.color = 'red';
-        return;
-    }
+    setTimeout(() => {
+      toast.classList.add(
+        "-translate-y-[150%]",
+        "opacity-0",
+        "pointer-events-none"
+      );
+    }, 5000);
+  }
 
-    if (userLogin.password !== password) {
-        outputMessage.innerHTML = 'Password does not match.';
-        outputMessage.style.color = 'red';
-        return;
-    }
+  // =========================
+  // PASSWORD TOGGLE
+  // =========================
+  const passwordField = document.getElementById("password");
+  const togglePwd = document.getElementById("togglePwd");
 
-    saveLoggedInUser(userLogin);
-    window.location.href = "../html/mailverification.html";
+  togglePwd.addEventListener("click", () => {
+    const isPassword = passwordField.type === "password";
+    passwordField.type = isPassword ? "text" : "password";
+
+    togglePwd.classList.toggle("fa-eye");
+    togglePwd.classList.toggle("fa-eye-slash");
+  });
+
+  // =========================
+  // FORM SUBMIT
+  // =========================
+  document
+    .getElementById("loginForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+      validate(showIgToast);
+    });
+};
+
+
+// =========================
+// VALIDATION FUNCTION
+// =========================
+function validate(showIgToast) {
+
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
+  const outputMessage = document.getElementById("outputMessage");
+
+  const userLogin = getRegisteredUser().find(
+    (user) => user.email === email
+  );
+
+  if (!userLogin) {
+    outputMessage.textContent = "Email address does not match.";
+    outputMessage.style.color = "red";
+    return;
+  }
+
+  if (userLogin.password !== password) {
+    outputMessage.textContent = "Password does not match.";
+    outputMessage.style.color = "red";
+    return;
+  }
+
+  // ✅ SUCCESS
+  saveLoggedInUser(userLogin);
+  outputMessage.textContent = "";
+  showIgToast("Login successful!");
+
+  setTimeout(() => {
+    window.location.href = "../html/dashboard.html";
+  }, 1200);
 }

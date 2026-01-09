@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hidden Until Submit</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+
+ 
+  <div
+    id="igToast"
+    class="fixed top-3 left-1/2 z-50 w-full max-w-md
+           -translate-x-1/2 -translate-y-[150%]
+           opacity-0 pointer-events-none
+           bg-white text-gray-800 shadow-lg
+           border border-gray-200 rounded-lg
+           transition-all duration-500"
+  >
+    <div class="flex items-center gap-3 px-4 py-3">
+      <span class="font-medium" id="igToastMessage"></span>
+    </div>
+  </div>
+
+ 
+  <form
+    id="signupForm"
+    class="w-full max-w-sm space-y-4 rounded-xl bg-white p-6 shadow"
+  >
+    <h2 class="text-xl font-semibold text-gray-800">
+      Sign Up
+    </h2>
+
+    <input
+      type="email"
+      required
+      placeholder="Email address"
+      class="w-full h-12 rounded-lg border px-4
+             focus:border-green-600 focus:ring-1 focus:ring-green-600"
+    />
+
+    <button
+      type="submit"
+      class="w-full h-12 rounded-lg bg-green-600 text-white
+             hover:bg-green-700 transition"
+    >
+      Submit
+    </button>
+  </form>
+
+  <!-- JavaScript -->
+  <script>
+    function showIgToast(message) {
+      const toast = document.getElementById("igToast");
+      const messageEl = document.getElementById("igToastMessage");
+
+      messageEl.textContent = message;
+
+      // SHOW
+      toast.classList.remove(
+        "-translate-y-[150%]",
+        "opacity-0",
+        "pointer-events-none"
+      );
+
+      // HIDE AFTER 5 SECONDS
+      setTimeout(() => {
+        toast.classList.add(
+          "-translate-y-[150%]",
+          "opacity-0",
+          "pointer-events-none"
+        );
+      }, 5000);
+    }
+
+    document
+      .getElementById("signupForm")
+      .addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        showIgToast("Login successfully!");
+
+        this.reset();
+
+        setTimeout(() => {
+          window.location.href = "../html/dashboard.html";
+        }, 5000);
+      });
+  </script>
+
+</body>
+</html>

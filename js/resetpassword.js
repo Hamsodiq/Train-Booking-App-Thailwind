@@ -1,6 +1,32 @@
 window.onload = function () {
 
   // ================================
+  // TOAST NOTIFICATION
+  // ================================
+  function showIgToast(message) {
+    const toast = document.getElementById("igToast");
+    const messageEl = document.getElementById("igToastMessage");
+
+    messageEl.textContent = message;
+
+    // SHOW
+    toast.classList.remove(
+      "-translate-y-full",
+      "opacity-0",
+      "pointer-events-none"
+    );
+
+    // HIDE AFTER 5 SECONDS
+    setTimeout(() => {
+      toast.classList.add(
+        "-translate-y-full",
+        "opacity-0",
+        "pointer-events-none"
+      );
+    }, 5000);
+  }
+
+  // ================================
   // PASSWORD VISIBILITY TOGGLE
   // ================================
   function setupToggle(inputId, iconId) {
@@ -12,6 +38,7 @@ window.onload = function () {
     icon.addEventListener("click", function () {
       const isPassword = input.type === "password";
       input.type = isPassword ? "text" : "password";
+
       icon.classList.toggle("fa-eye");
       icon.classList.toggle("fa-eye-slash");
     });
@@ -21,12 +48,16 @@ window.onload = function () {
   setupToggle("confirmPassword", "toggleConfirmPassword");
 
   // ================================
-  // FORM SUBMIT
+  // FORM SUBMIT HANDLER
   // ================================
   document
     .getElementById("resetForm")
-    .addEventListener("submit", newPasswordValidate);
+    .addEventListener("submit", function (e) {
+      newPasswordValidate(e);
+      showIgToast("Password reset successful!");
+    });
 };
+
 
 // ================================
 // PASSWORD RESET LOGIC
@@ -39,8 +70,10 @@ function newPasswordValidate(e) {
   const output = document.getElementById("output");
   const confirmInput = document.getElementById("confirmPassword");
 
+  // Reset border
   confirmInput.style.border = "1px solid #d1d5db";
 
+  // Validation
   if (password !== confirmPassword) {
     output.textContent = "Passwords do not match";
     output.style.color = "red";
@@ -51,16 +84,23 @@ function newPasswordValidate(e) {
   output.textContent = "Password successfully changed";
   output.style.color = "green";
 
-  const lastUserMail = sessionStorage.getItem("lastUserForgotPasswordEmail");
+  const lastUserMail = sessionStorage.getItem(
+    "lastUserForgotPasswordEmail"
+  );
   if (!lastUserMail) return;
 
   const users = getRegisteredUser();
-  const index = users.findIndex(user => user.email === lastUserMail);
+  const index = users.findIndex(
+    user => user.email === lastUserMail
+  );
 
   if (index === -1) return;
 
   users[index].password = password;
-  localStorage.setItem("registeredUser", JSON.stringify(users));
+  localStorage.setItem(
+    "registeredUser",
+    JSON.stringify(users)
+  );
 
   setTimeout(() => {
     window.location.href = "../html/login.html";
