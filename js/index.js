@@ -121,7 +121,7 @@ window.onload = function () {
     document.getElementById("signupForm").reset();
 
     setTimeout(() => {
-      window.location.href = "../html/login.html";
+      window.location.href = "html/login.html";
     }, 2000);
   }
 };
